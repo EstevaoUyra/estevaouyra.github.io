@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Guia dos 38 bares e restaurantes de SP da lista: bairro, referência, mapa e Instagram.">
+<title>Bora Frequentar SP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: guia de bolso — busca + filtros fixos no topo, lista de cards em coluna/grade */
+:root{
+  --bg:#F4F6F3; --surface:#FFFFFF; --ink:#18221F; --muted:#5C6A65; --line:#DCE3DF;
+  --accent:#0D6B5B; --accent-soft:#DDEFE9; --mark:#E2A52B; --mark-soft:#FBF0D6;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
+  --accent:#4FC2A8; --accent-soft:#16332C; --mark:#F0BC52; --mark-soft:#3A2F14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
+  --accent:#4FC2A8; --accent-soft:#16332C; --mark:#F0BC52; --mark-soft:#3A2F14; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;font-size:15px;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto}
+header{padding-block:28px 12px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,46px);line-height:1.02;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--accent)}
+.home{display:inline-block;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:12px}
+.home:hover{color:var(--accent)}
+.lede{color:var(--muted);margin:10px 0 0;max-width:62ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+#q{width:100%;font:inherit;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+#q:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.row::-webkit-scrollbar{display:none}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;flex:none;margin-right:2px;font-weight:600}
+.chip{flex:none;font:500 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 11px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.chip:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.count{font-size:13px;color:var(--muted);margin:14px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.top{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+.card h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0;line-height:1.15;min-width:0}
+.num{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.pill.reg{background:var(--mark-soft);color:var(--ink)}
+.desc{margin:0;color:var(--ink)}
+.loc{margin:0;font-size:14px;color:var(--muted)}
+.loc b{color:var(--ink);font-weight:600}
+.note{font-size:13px;margin:0;padding:6px 9px;border-left:3px solid var(--mark);background:var(--mark-soft);border-radius:0 6px 6px 0}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);border:1px solid var(--line);padding:5px 10px;border-radius:8px}
+.links a:hover{border-color:var(--accent)}
+.links a.soft{color:var(--muted);font-weight:500}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+.views{display:flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;width:max-content;margin-top:16px}
+.views button{font:600 14px var(--body);border:0;background:transparent;color:var(--muted);padding:8px 18px;border-radius:9px;cursor:pointer}
+.views button[aria-selected="true"]{background:var(--accent);color:var(--bg)}
+.views button:focus-visible,.card button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.card button.see{font:600 13px var(--body);color:var(--accent);background:var(--accent-soft);border:1px solid transparent;padding:5px 10px;border-radius:8px;cursor:pointer}
+#mapview{padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.mapframe{width:100%;height:min(72vh,640px);border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.maphead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.maphead b{color:var(--ink)}
+.maphead button{font:600 13px var(--body);color:var(--accent);background:none;border:1px solid var(--line);padding:5px 10px;border-radius:8px;cursor:pointer}
+.places{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <a class="home" href="../">← Estevão Uyrá</a>
+  <h1>Bora <span>frequentar</span></h1>
+  <p class="lede">Os 38 bares e restaurantes da lista, com bairro, ponto de referência e links. Filtre por região ou tipo, ou veja todos no mapa.</p>
+  <div class="views" role="tablist">
+    <button id="tab-list" role="tab" aria-selected="true">Lista</button>
+    <button id="tab-map" role="tab" aria-selected="false">Mapa</button>
+  </div>
+</header>
+
+<section id="mapview" hidden>
+  <div class="maphead"><span id="maplabel"></span><button id="mapall" type="button" hidden>Ver todos</button></div>
+  <iframe id="mapframe" class="mapframe" title="Mapa dos lugares" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+  <div class="places" id="places"></div>
+</section>
+
+<div id="listview">
+<div class="bar">
+  <input id="q" type="search" placeholder="Buscar nome, bairro, comida…" aria-label="Buscar">
+  <div class="row" id="regs"><span class="lbl">Região</span></div>
+  <div class="row" id="tipos"><span class="lbl">Tipo</span></div>
+</div>
+
+<p class="count" id="count"></p>
+<div class="grid" id="grid"></div>
+<p class="empty" id="empty" hidden>Nada encontrado com esses filtros.</p>
+</div>
+
+<footer>
+  Perfis de Instagram marcados com (?) são os mais prováveis, mas não consegui confirmar (Lola Bar e Tuju). No Jiquitaia e no Cuia, que não achei perfil próprio, o link é dos chefs (Marcelo Bastos e Bel Coelho), que divulgam os restaurantes. Endereços conferidos em guias e matérias recentes, mas horários e unidades mudam: vale checar o Instagram antes de ir. Nomes da lista corrigidos quando havia grafia diferente (ex.: Moquifo → Muquifo, Jequitaia → Jiquitaia, Nellita → Nelita).
+</footer>
+</div>
+
+<script>
+const D=[
+{n:1,name:"Samba da Santa Cecília",t:"Samba",r:"Centro",d:"Roda de samba de raiz na praça, desde 1996. Gratuita e ao ar livre.",b:"Santa Cecília",ref:"Largo Santa Cecília, na saída do metrô Santa Cecília",note:"Toda sexta, a partir das 20h.",ig:"comunidadedosambasantacecilia",q:"Largo Santa Cecília São Paulo"},
+{n:2,name:"Lola Bar",ig:"_barlola?",t:"Bar",r:"Barra Funda",d:"Bar cultural com drinks autorais de pegada brasileira, comidinhas veganas, estante de livros independentes e eventos.",b:"Barra Funda",ref:"Rua Brigadeiro Galvão, 469",q:"Lola Bar Rua Brigadeiro Galvão 469"},
+{n:3,name:"Bar do Chagas",ig:"_bardochagas",t:"Samba",r:"Barra Funda",d:"Boteco com música ao vivo; roda “Samba & Conversa Fiada” às quintas e noites de forró/piseiro.",b:"Barra Funda",ref:"Rua João de Barros, 23",note:"Samba toda quinta, 19h.",q:"Bar do Chagas Rua João de Barros 23"},
+{n:4,name:"Boteco de Manu",ig:"botecodemanu",t:"Bar",r:"Barra Funda",d:"Boteco da chef Manu Ferraz (de A Baianeira): petiscos, drinques e música.",b:"Barra Funda",ref:"Rua Lavradio, 235",q:"Boteco de Manu Rua Lavradio 235"},
+{n:5,name:"Bar Moela",ig:"barmoela",t:"Bar",r:"Centro",d:"Boteco de calçada famoso pelos bolinhos e miúdos: moela, língua, rabada, tutano.",b:"Santa Cecília / Vila Buarque",ref:"Rua Canuto do Val, 136, perto do metrô Santa Cecília",q:"Bar Moela Rua Canuto do Val 136"},
+{n:6,name:"Al Janiah",ig:"aljaniah_oficial",t:"Restaurante",r:"Bixiga / Paulista",d:"Bar, restaurante e centro cultural palestino, com equipe de refugiados. Shawarma, falafel e debates.",b:"Bixiga (Bela Vista)",ref:"Rua Rui Barbosa, 269, perto do Teatro Sérgio Cardoso",q:"Al Janiah Rua Rui Barbosa 269"},
+{n:7,name:"Sirigoela",t:"Samba",r:"Bixiga / Paulista",d:"Bar de samba tradicional do Bixiga.",b:"Bixiga (Bela Vista)",ref:"Rua Treze de Maio, 70",note:"Foi lacrado pela prefeitura em jan/2026; confira no Instagram se reabriu.",ig:"sirigoelabixiga",q:"Sirigoela Rua Treze de Maio 70"},
+{n:8,name:"Escarcéu Bar",ig:"escarceubar",t:"Samba",r:"Centro",d:"Boteco de portas abertas para a rua com roda de samba, pagode e MPB ao vivo.",b:"Vila Buarque",ref:"Rua Santa Isabel, 149",q:"Escarcéu Bar Rua Santa Isabel 149"},
+{n:9,name:"Armazém do Campo",ig:"armazemdocampo.sp",t:"Rápido / empório",r:"Centro",d:"Loja e café do MST com produtos da reforma agrária, livraria Expressão Popular e eventos.",b:"Campos Elíseos",ref:"Alameda Nothmann, 806, perto do metrô Marechal Deodoro",note:"Espaço Cultural Elza Soares fica na Al. Eduardo Prado, 474.",q:"Armazém do Campo Alameda Nothmann 806"},
+{n:10,name:"Ó do Borogodó",ig:"odoborogodobar",t:"Samba",r:"Pinheiros / Vila Madalena",d:"Casa pequena e lotada, desde 2001 referência em samba e choro até a madrugada.",b:"Pinheiros",ref:"Rua Horácio Lane, 21, divisa com a Vila Madalena",site:"https://odoborogodo.com.br",q:"Ó do Borogodó Rua Horácio Lane 21"},
+{n:11,name:"Cervejaria Central",ig:"cervejariacentralsp",t:"Bar",r:"Centro",d:"Brewpub com cerveja própria (a Estopim é a clássica) e sanduíches.",b:"Vila Buarque / Santa Cecília",ref:"Rua Jesuíno Pascoal, 101",q:"Cervejaria Central Rua Jesuíno Pascoal 101"},
+{n:12,name:"A Revolucionária",t:"Samba",r:"Bixiga / Paulista",d:"Boteco e espaço cultural com música ao vivo, rodas de partido alto.",b:"Bela Vista",ref:"Rua Genebra, 39, perto do metrô Anhangabaú",ig:"espacoarevolucionaria",q:"A Revolucionária Rua Genebra 39"},
+{n:13,name:"Trecão",t:"Bar",r:"Zona Sul",d:"Boteco desde 1983: cerveja gelada barata, atendimento querido e bolinhos famosos.",b:"Cursino",ref:"Rua Nova Lousã, 66, perto do metrô Santos-Imigrantes",ig:"trecao",q:"Trecão Bar Rua Nova Louza 66"},
+{n:14,name:"Tuju",ig:"restaurante_tuju?",t:"Alta gastronomia",r:"Jardins",d:"Menu degustação de cozinha brasileira contemporânea, um dos mais premiados do país.",b:"Jardim Paulistano",ref:"Rua Frei Galvão, 135",q:"Tuju Rua Frei Galvão 135"},
+{n:15,name:"Ráscal",ig:"rascalrestaurante",t:"Restaurante",r:"Várias",d:"Rede de cozinha mediterrânea com buffet de saladas e antepastos, massas e pizzas.",b:"Várias unidades",ref:"Ex.: Shopping Iguatemi, JK Iguatemi, Al. Santos 870, Itaim (R. Leopoldo Couto de Magalhães Jr, 831)",q:"Ráscal restaurante São Paulo"},
+{n:16,name:"Mocotó",ig:"mocotorestaurante",t:"Restaurante",r:"Zona Norte",d:"Cozinha sertaneja do chef Rodrigo Oliveira: dadinho de tapioca, mocofava, cachaças. Bib Gourmand.",b:"Vila Medeiros",ref:"Av. Nossa Senhora do Loreto, 1100",note:"Fila no fim de semana; chegue cedo.",q:"Mocotó Av Nossa Senhora do Loreto 1100"},
+{n:17,name:"Arturito",ig:"restaurantearturito",t:"Restaurante",r:"Pinheiros / Vila Madalena",d:"Restaurante da chef Paola Carosella: cozinha de estação, massas e legumes. Bib Gourmand.",b:"Pinheiros",ref:"Rua Artur de Azevedo, 542",site:"https://www.arturito.com.br",q:"Arturito Rua Artur de Azevedo 542"},
+{n:18,name:"La Guapa",t:"Rápido / empório",r:"Várias",d:"Empanadas artesanais da Paola Carosella. Lojas em vários bairros e delivery.",b:"Várias unidades",ref:"Ex.: Rua dos Pinheiros e Itaim (R. Bandeira Paulista)",ig:"laguapasp",q:"La Guapa empanadas São Paulo"},
+{n:19,name:"Maní",ig:"manimanioca",t:"Alta gastronomia",r:"Jardins",d:"Restaurante da chef Helena Rizzo, cozinha brasileira autoral e criativa.",b:"Jardim Paulistano",ref:"Rua Joaquim Antunes, 210",q:"Maní Rua Joaquim Antunes 210"},
+{n:20,name:"Manioca",ig:"manimanioca",t:"Restaurante",r:"Jardins",d:"Versão casual do Maní, comida de conforto. Bib Gourmand.",b:"Jardim Paulistano / Itaim",ref:"Shopping Iguatemi (3º andar); também Manioca da Mata, Rua da Mata, 212 (Itaim)",q:"Manioca Shopping Iguatemi"},
+{n:21,name:"A Casa do Porco",ig:"acasadoporcobar",t:"Restaurante",r:"Centro",d:"Porco do focinho ao rabo, dos chefs Janaína e Jefferson Rueda. Um dos 50 melhores do mundo.",b:"República",ref:"Rua Araújo, 124, perto da Praça da República",note:"Fila grande; o Hot Pork ao lado vende o sanduíche rápido.",q:"A Casa do Porco Rua Araújo 124"},
+{n:22,name:"Bar da Dona Onça",ig:"bardadonaonca",t:"Restaurante",r:"Centro",d:"Comida brasileira de boteco caprichada, da chef Janaína Rueda.",b:"República",ref:"Térreo do Edifício Copan (Av. Ipiranga, 200)",q:"Bar da Dona Onça Copan"},
+{n:23,name:"Miado",t:"Restaurante",r:"Jardins",d:"Cozinha com sotaque asiático da chef Renata Vanzetto (Grupo EME). Pet friendly.",b:"Jardins / Consolação",ref:"Rua Bela Cintra, 1533",ig:"restaurante.miado",q:"Miado Rua Bela Cintra 1533"},
+{n:24,name:"Muquifo",ig:"muquifo.restaurante",t:"Restaurante",r:"Jardins",d:"“Cozinha de família” da chef Renata Vanzetto, clima de casa de vó.",b:"Jardins / Consolação",ref:"Corredor do Grupo EME na Bela Cintra / Consolação",note:"Grafado “Moquifo” na lista. Confira o endereço atual no Instagram.",q:"Muquifo Renata Vanzetto"},
+{n:25,name:"Jiquitaia",ig:"marcelocorreabastos?",t:"Restaurante",r:"Zona Sul",d:"Cozinha brasileira e paulistana num sobrado dos anos 50, com ótima carta de cachaças.",b:"Paraíso",ref:"Rua Coronel Oscar Porto, 808",site:"https://jiquitaia.com.br",note:"Grafado “Jequitaia” na lista.",q:"Jiquitaia Rua Coronel Oscar Porto 808"},
+{n:26,name:"Mamma Vanzetto",t:"Restaurante",r:"Jardins",d:"Italiano “moderninho” do Grupo EME: entradinhas, massas e pizza.",b:"Jardins / Consolação",ref:"Rua Bela Cintra, 1533 (mesmo endereço do Miado)",ig:"mammavanzetto",q:"Mamma Vanzetto Rua Bela Cintra 1533"},
+{n:27,name:"Casa Europa",ig:"casaeuropa",t:"Restaurante",r:"Jardins",d:"Cantina italiana, rotisseria e empório com massas frescas, frutos do mar e adega.",b:"Jardim América",ref:"Alameda Gabriel Monteiro da Silva, 726",q:"Casa Europa Alameda Gabriel Monteiro da Silva 726"},
+{n:28,name:"Bar Europa",ig:"bareuropa__",t:"Bar",r:"Jardins",d:"Bar e restaurante de inspiração europeia: pizzas, massas e drinks autorais.",b:"Jardim Paulistano",ref:"Alameda Gabriel Monteiro da Silva, 1333",q:"Bar Europa Alameda Gabriel Monteiro da Silva 1333"},
+{n:29,name:"Adega Santiago",ig:"adegasantiago",t:"Restaurante",r:"Jardins",d:"Taberna ibérica (Portugal/Espanha): bacalhau, polvo, paella e carta grande de vinhos.",b:"Jardim Paulistano (+ outras)",ref:"Rua Sampaio Vidal, 1072; também Shopping Cidade Jardim e R. Haddock Lobo, 1626",q:"Adega Santiago Rua Sampaio Vidal 1072"},
+{n:30,name:"Taberna 474",t:"Restaurante",r:"Jardins",d:"Taberna portuguesa com peixes e frutos do mar, ostras e arroz de pato.",b:"Jardim Paulistano",ref:"Rua Maria Carolina, 474",site:"https://taberna474.com.br",ig:"taberna474",q:"Taberna 474 Rua Maria Carolina 474"},
+{n:31,name:"Nelita",ig:"nelita_restaurant",t:"Alta gastronomia",r:"Pinheiros / Vila Madalena",d:"Cozinha autoral de DNA italiano da chef Tássia Magalhães. No Latin America’s 50 Best.",b:"Pinheiros",ref:"Rua Ferreira de Araújo, 330 (Baixo Pinheiros)",note:"Grafado “Nellita” na lista.",q:"Nelita Rua Ferreira de Araújo 330"},
+{n:32,name:"Heavy House",ig:"heavyhouse___",t:"Bar",r:"Pinheiros / Vila Madalena",d:"Bar, restaurante e clube com música ao vivo e festas. Pet friendly e pró-LGBT.",b:"Pinheiros",ref:"Rua Benjamin Egas, 297",q:"Heavy House Rua Benjamin Egas 297"},
+{n:33,name:"Le Freak",ig:"lefreak.menu",t:"Bar",r:"Centro",d:"Bistrô francês com bar late hours e caveau, aberto em 2026.",b:"República",ref:"Av. São Luís, 282",q:"Le Freak Avenida São Luís 282"},
+{n:34,name:"Wrappd by Sofy",t:"Rápido / empório",r:"Várias",d:"Wraps “saudáveis” de Sofia Bresser. Funciona por delivery no iFood.",b:"Delivery",ref:"Pedido pelo iFood",note:"“Bresser” na lista é o sobrenome da fundadora, não a rua.",ig:"wrappd.bysofy",q:"Wrappd by Sofy"},
+{n:35,name:"WeProtein",t:"Rápido / empório",r:"Várias",d:"Marca de smoothies proteicos e suplementos fundada por Wafá Kadri.",b:"Ver unidades",ref:"Pontos de venda no Instagram",ig:"weproteinoficial",q:"WeProtein São Paulo"},
+{n:36,name:"Balaio IMS",ig:"balaioims",t:"Restaurante",r:"Bixiga / Paulista",d:"Cozinha brasileira do chef Rodrigo Oliveira (Mocotó) dentro do Instituto Moreira Salles. Bib Gourmand.",b:"Av. Paulista",ref:"Av. Paulista, 2424, térreo do IMS (café no 5º andar)",q:"Balaio IMS Avenida Paulista 2424"},
+{n:37,name:"Clandestina",ig:"clandestinarestaurante",t:"Restaurante",r:"Pinheiros / Vila Madalena",d:"Cozinha brasileira com ingredientes nativos da chef Bel Coelho, pratos para dividir. Bib Gourmand.",b:"Vila Madalena",ref:"Rua Girassol, 833B",q:"Clandestina Rua Girassol 833"},
+{n:38,name:"Cuia",ig:"belcoelho?",t:"Restaurante",r:"Centro",d:"Café, bar e restaurante da Bel Coelho dentro da livraria Megafauna. Bib Gourmand.",b:"República",ref:"Edifício Copan (Av. Ipiranga, 200, loja 48); tem unidade em Pinheiros",q:"Cuia Copan Megafauna"}
+];
+const REGS=["Todas","Centro","Barra Funda","Bixiga / Paulista","Pinheiros / Vila Madalena","Jardins","Zona Sul","Zona Norte","Várias"];
+const TIPOS=["Todos","Samba","Bar","Restaurante","Alta gastronomia","Rápido / empório"];
+let st={r:"Todas",t:"Todos",q:""};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+function chips(el,list,key){list.forEach(v=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=v;b.setAttribute("aria-pressed",st[key]===v);b.onclick=()=>{st[key]=v;el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.textContent===v));render()};el.appendChild(b)})}
+chips($("#regs"),REGS,"r");chips($("#tipos"),TIPOS,"t");
+function card(x){
+ const maps="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.q+" São Paulo");
+ const h=(x.ig||"").replace("?",""),unc=(x.ig||"").endsWith("?");
+ const ig=h?`<a href="https://www.instagram.com/${h}/" target="_blank" rel="noopener"${unc?' class="soft" title="Perfil provável, não confirmado"':""}>@${esc(h)}${unc?" (?)":""}</a>`:"";
+ const site=x.site?`<a href="${x.site}" target="_blank" rel="noopener">Site</a>`:"";
+ return `<article class="card"><div class="top"><h2>${esc(x.name)}</h2><span class="num">#${x.n}</span></div>
+ <div class="pills"><span class="pill">${esc(x.t)}</span><span class="pill reg">${esc(x.b)}</span></div>
+ <p class="desc">${esc(x.d)}</p><p class="loc"><b>Onde:</b> ${esc(x.ref)}</p>
+ ${x.note?`<p class="note">${esc(x.note)}</p>`:""}
+ <div class="links"><button class="see" type="button" data-n="${x.n}">Ver no mapa</button><a href="${maps}" target="_blank" rel="noopener">Google Maps</a>${ig}${site}</div></article>`}
+
+/* ===== MAPA =====
+   Cole aqui o link de embed do seu Google My Maps (o src do iframe que o My Maps gera).
+   Ex.: "https://www.google.com/maps/d/embed?mid=XXXXXXXX"
+   Enquanto estiver vazio, o mapa mostra um lugar por vez. */
+const MYMAPS_EMBED="";
+
+const one=x=>"https://maps.google.com/maps?q="+encodeURIComponent(x.q.includes("São Paulo")?x.q:x.q+" São Paulo")+"&z=16&output=embed";
+function showMap(x){
+  const f=$("#mapframe");
+  if(!x&&MYMAPS_EMBED){f.src=MYMAPS_EMBED;$("#maplabel").innerHTML="<b>Todos os lugares</b>";$("#mapall").hidden=true;return}
+  x=x||D[0];
+  f.src=one(x);
+  $("#maplabel").innerHTML="Mostrando: <b>"+esc(x.name)+"</b>"+(MYMAPS_EMBED?"":" · toque num nome abaixo para trocar");
+  $("#mapall").hidden=!MYMAPS_EMBED;
+}
+function setView(v,x){
+  const m=v==="map";
+  $("#mapview").hidden=!m;$("#listview").hidden=m;
+  $("#tab-map").setAttribute("aria-selected",m);$("#tab-list").setAttribute("aria-selected",!m);
+  if(m){showMap(x);window.scrollTo({top:0})}
+}
+$("#places").innerHTML=D.filter(x=>x.r!=="Várias"||x.n===15||x.n===18).map(x=>`<button class="chip" type="button" data-n="${x.n}">${esc(x.name)}</button>`).join("");
+$("#places").addEventListener("click",e=>{const b=e.target.closest("[data-n]");if(b)showMap(D.find(x=>x.n==b.dataset.n))});
+$("#grid").addEventListener("click",e=>{const b=e.target.closest("button.see");if(b)setView("map",D.find(x=>x.n==b.dataset.n))});
+$("#tab-map").onclick=()=>setView("map");
+$("#tab-list").onclick=()=>setView("list");
+$("#mapall").onclick=()=>showMap();
+function render(){
+ const q=norm(st.q.trim());
+ const out=D.filter(x=>(st.r==="Todas"||x.r===st.r)&&(st.t==="Todos"||x.t===st.t)&&(!q||norm([x.name,x.d,x.b,x.ref,x.t].join(" ")).includes(q)));
+ $("#grid").innerHTML=out.map(card).join("");
+ $("#count").textContent=out.length+(out.length===1?" lugar":" lugares");
+ $("#empty").hidden=out.length>0;
+}
+$("#q").addEventListener("input",e=>{st.q=e.target.value;render()});
+render();
+</script>
+</body>
+</html>
