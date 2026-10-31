@@ -90,6 +90,8 @@ h1,.sec{font-family:var(--display);font-weight:800;margin:0;letter-spacing:-.02e
 #map{width:100%;height:min(62vh,420px);border:1px solid var(--line);border-radius:12px;background:var(--surface);z-index:0}
 .maphead{font-size:13px;color:var(--muted);margin:0}
 .maphead b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0;font-size:12px;color:var(--muted)}
+.legend:empty{display:none}
 @media (min-width:960px){
   .main{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
   .mapcol,.mapcol.closed{display:flex;grid-column:2;grid-row:1;position:sticky;top:calc(var(--barh) + 14px)}
@@ -102,7 +104,22 @@ h1,.sec{font-family:var(--display);font-weight:800;margin:0;letter-spacing:-.02e
 .card.flash{border-color:var(--mark);box-shadow:0 0 0 3px var(--mark-soft)}
 .top{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
 .card h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0;line-height:1.15;min-width:0}
-.num{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.badge{flex:none;align-self:flex-start;min-width:26px;height:26px;padding:0 6px;border-radius:13px;background:var(--c);color:#fff;font:700 13px/26px var(--body);text-align:center;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
+.chip.zero{opacity:.45}
+.units{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.units button{font:inherit;font-size:14px;color:var(--muted);background:none;border:0;padding:2px 0;text-align:left;cursor:pointer}
+.units button b{color:var(--accent);font-weight:600}
+.loc details summary{cursor:pointer;color:var(--accent);font-weight:600;margin-top:2px}
+.units button:hover b{text-decoration:underline}
+.precos{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.precos ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.precos li{display:flex;justify-content:space-between;gap:12px;font-size:14px;align-items:baseline}
+.precos li span{min-width:0}
+.precos li small{color:var(--muted);font-size:12px}
+.precos li b{flex:none;font-variant-numeric:tabular-nums;font-weight:600}
+.precos p{margin:8px 0 0;font-size:12px;color:var(--muted)}
+.precos p a{color:var(--accent)}
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pill{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
 .pill.reg{background:var(--mark-soft);color:var(--ink)}
@@ -122,8 +139,8 @@ h1,.sec{font-family:var(--display);font-weight:800;margin:0;letter-spacing:-.02e
 .ig .instagram-media a{font-size:13px;font-weight:600;color:var(--accent)}
 
 /* Mapa (Leaflet) com as cores da página */
-.pin{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.35)}
-.pin.on{background:var(--mark);width:26px;height:26px;margin:-3px 0 0 -3px}
+.pin{width:26px;height:26px;border-radius:50%;background:var(--c);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);color:#fff;font:700 12px/22px var(--body);text-align:center;font-variant-numeric:tabular-nums}
+.pin.on{transform:scale(1.3);box-shadow:0 0 0 3px var(--mark),0 2px 6px rgba(0,0,0,.4)}
 .leaflet-container{font-family:var(--body);background:var(--surface)}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.25)}
 .leaflet-popup-content{margin:12px 14px;font-size:13px;line-height:1.4}
@@ -180,6 +197,7 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:70ch}
     <div class="mapcol closed" id="mapcol">
       <p class="maphead" id="maplabel"></p>
       <div id="map" role="region" aria-label="Mapa dos lugares filtrados"></div>
+      <p class="legend" id="legend"></p>
     </div>
     <div class="results">
       <div class="status">
@@ -249,8 +267,16 @@ const D=[
 {n:37,name:"Clandestina",ig:"clandestinarestaurante",t:"Restaurante",r:"Pinheiros / Vila Madalena",d:"Cozinha brasileira com ingredientes nativos da chef Bel Coelho, pratos para dividir. Bib Gourmand.",b:"Vila Madalena",ref:"Rua Girassol, 833B",q:"Clandestina Rua Girassol 833",info:"WhatsApp (11) 94145-9589.",post:"p/DfAw2m4FAmB"},
 {n:38,name:"Cuia",ig:"cuia_restaurante",t:"Restaurante",r:"Centro",d:"Café, bar e restaurante da Bel Coelho dentro da livraria Megafauna. Bib Gourmand.",b:"República",ref:"Edifício Copan (Av. Ipiranga, 200, loja 48); tem unidade em Pinheiros",q:"Cuia Copan Megafauna",info:"Brunch, almoço, jantar, drinques e café.",post:"p/DecYNi0FF10"}
 ];
-const REGS=["Todas","Centro","Barra Funda","Bixiga / Paulista","Pinheiros / Vila Madalena","Jardins","Zona Sul","Zona Norte","Várias"];
+/* ===== UNIDADES E PREÇOS =====
+   UN: lugares com mais de um endereço, por número da lista (n). A primeira unidade é a principal.
+   PRECO: alguns preços de referência por lugar, com fonte e data. */
+const UN={"5":[{"nome":"Santa Cecília","end":"Rua Canuto do Val, 136","bairro":"Santa Cecília","regiao":"Centro","lat":-23.540216,"lng":-46.651847},{"nome":"Pinheiros","end":"Rua Cardeal Arcoverde, 2320","bairro":"Pinheiros","regiao":"Pinheiros / Vila Madalena","lat":-23.564639,"lng":-46.692979},{"nome":"Vila Mariana","end":"Rua Tangará, 137","bairro":"Vila Mariana","regiao":"Zona Sul","lat":-23.590843,"lng":-46.645578}],"15":[{"nome":"Shopping Iguatemi","end":"Av. Brigadeiro Faria Lima, 2232 (Shopping Iguatemi)","bairro":"Jardim Paulistano","regiao":"Jardins","lat":-23.577199,"lng":-46.688049},{"nome":"Conjunto Nacional","end":"Alameda Santos, 2152 (Conjunto Nacional)","bairro":"Cerqueira César","regiao":"Bixiga / Paulista","lat":-23.559023,"lng":-46.659767},{"nome":"Itaim","end":"Rua Leopoldo Couto de Magalhães Júnior, 831","bairro":"Itaim Bibi","regiao":"Jardins","lat":-23.588512,"lng":-46.68071},{"nome":"Alameda Santos","end":"Alameda Santos, 870","bairro":"Jardim Paulista","regiao":"Bixiga / Paulista","lat":-23.567138,"lng":-46.651576},{"nome":"Shopping Pátio Higienópolis","end":"Av. Higienópolis, 646 (Shopping Pátio Higienópolis)","bairro":"Higienópolis","regiao":"Centro","lat":-23.542124,"lng":-46.657393},{"nome":"Shopping Villa-Lobos","end":"Av. das Nações Unidas, 4777 (Shopping Villa-Lobos)","bairro":"Alto de Pinheiros","regiao":"Zona Oeste","lat":-23.551082,"lng":-46.722143},{"nome":"Shopping Market Place","end":"Av. Dr. Chucri Zaidan, 902 (Shopping Market Place)","bairro":"Vila Cordeiro / Brooklin","regiao":"Zona Sul","lat":-23.621504,"lng":-46.699919},{"nome":"Shopping JK Iguatemi","end":"Av. Pres. Juscelino Kubitschek, 2041 (Shopping JK Iguatemi)","bairro":"Vila Olímpia","regiao":"Jardins","lat":-23.591364,"lng":-46.689766}],"16":[{"nome":"Vila Medeiros","end":"Av. Nossa Senhora do Loreto, 1100","bairro":"Vila Medeiros","regiao":"Zona Norte","lat":-23.486721,"lng":-46.581574},{"nome":"Vila Clementino","end":"Rua Pedro de Toledo, 450","bairro":"Vila Clementino","regiao":"Zona Sul","lat":-23.598257,"lng":-46.644722},{"nome":"Vila Leopoldina","end":"Rua Aroaba, 333","bairro":"Vila Leopoldina","regiao":"Zona Oeste","lat":-23.534548,"lng":-46.731868},{"nome":"Mocotó Café (Mercado de Pinheiros)","end":"Rua Pedro Cristi, 89 (Mercado de Pinheiros)","bairro":"Pinheiros","regiao":"Pinheiros / Vila Madalena","lat":-23.565616,"lng":-46.692409}],"18":[{"nome":"Pinheiros","end":"Rua dos Pinheiros, 248b","bairro":"Pinheiros","regiao":"Pinheiros / Vila Madalena","lat":-23.564613,"lng":-46.680645},{"nome":"Itaim Bibi","end":"Rua Iguatemi, 268","bairro":"Itaim Bibi","regiao":"Jardins","lat":-23.58306,"lng":-46.683163},{"nome":"Augusta","end":"Rua Antônio Carlos, 302","bairro":"Consolação","regiao":"Bixiga / Paulista","lat":-23.556585,"lng":-46.657769},{"nome":"Berrini","end":"Rua Flórida, 1602","bairro":"Brooklin","regiao":"Zona Sul","lat":-23.607559,"lng":-46.693355},{"nome":"Centro","end":"Rua Major Sertório, 120","bairro":"Vila Buarque","regiao":"Centro","lat":-23.545408,"lng":-46.645257},{"nome":"Chácara Flora","end":"Rua Moliére, 335","bairro":"Chácara Flora","regiao":"Zona Sul","lat":-23.655576,"lng":-46.692442},{"nome":"Aeroporto de Congonhas","end":"Av. Washington Luís, s/n (Aeroporto de Congonhas)","bairro":"Campo Belo","regiao":"Zona Sul","lat":-23.627415,"lng":-46.655561},{"nome":"Jardins (Lorena)","end":"Alameda Lorena, 1501","bairro":"Jardim Paulista","regiao":"Jardins","lat":-23.564076,"lng":-46.665874},{"nome":"Jardins (Itu)","end":"Alameda Itu, 513","bairro":"Jardim Paulista","regiao":"Jardins","lat":-23.564583,"lng":-46.658812},{"nome":"Liberdade","end":"Rua Américo de Campos, 84","bairro":"Liberdade","regiao":"Centro","lat":-23.557179,"lng":-46.635022},{"nome":"Moema","end":"Rua Canário, 1035","bairro":"Moema","regiao":"Zona Sul","lat":-23.60397,"lng":-46.669464},{"nome":"Passeio Paulista","end":"Rua da Consolação, 1601","bairro":"Consolação","regiao":"Bixiga / Paulista","lat":-23.551358,"lng":-46.655526},{"nome":"Perdizes","end":"Rua Dr. Cândido Espinheira, 338","bairro":"Perdizes","regiao":"Zona Oeste","lat":-23.533449,"lng":-46.663225},{"nome":"Pinga Store (Consolação)","end":"Rua da Consolação, 3378","bairro":"Cerqueira César","regiao":"Jardins","lat":-23.5615,"lng":-46.669309},{"nome":"Santana","end":"Av. Braz Leme, 2389","bairro":"Santana","regiao":"Zona Norte","lat":-23.503194,"lng":-46.637444},{"nome":"Shopping Cidade Jardim","end":"Av. Magalhães de Castro, 12000 (Shopping Cidade Jardim)","bairro":"Cidade Jardim","regiao":"Jardins","lat":-23.599033,"lng":-46.69757},{"nome":"Shopping Eldorado","end":"Av. Rebouças, 3970 (Shopping Eldorado)","bairro":"Pinheiros","regiao":"Pinheiros / Vila Madalena","lat":-23.572646,"lng":-46.695819},{"nome":"Shopping Pátio Higienópolis","end":"Av. Higienópolis, 681 (Shopping Pátio Higienópolis)","bairro":"Higienópolis","regiao":"Centro","lat":-23.542124,"lng":-46.657393},{"nome":"Shopping Jardim Sul","end":"Av. Giovanni Gronchi, 5819 (Shopping Jardim Sul)","bairro":"Vila Andrade","regiao":"Zona Sul","lat":-23.631077,"lng":-46.735916},{"nome":"Shopping Morumbi","end":"Av. Roque Petroni Júnior, 1089 (Shopping Morumbi)","bairro":"Jardim das Acácias","regiao":"Zona Sul","lat":-23.623417,"lng":-46.698544},{"nome":"Shopping Center Norte","end":"Av. Otto Baumgart, 500 (Shopping Center Norte)","bairro":"Vila Guilherme","regiao":"Zona Norte","lat":-23.515812,"lng":-46.618219},{"nome":"Tatuapé","end":"Rua Itapura, 1392","bairro":"Tatuapé","regiao":"Zona Leste","lat":-23.550783,"lng":-46.565053},{"nome":"Vila Leopoldina","end":"Rua Carlos Weber, 754","bairro":"Vila Leopoldina","regiao":"Zona Oeste","lat":-23.527458,"lng":-46.730913}],"20":[{"nome":"Shopping Iguatemi","end":"Av. Brigadeiro Faria Lima, 2232, 3º piso (Shopping Iguatemi)","bairro":"Jardim Paulistano","regiao":"Jardins","lat":-23.577199,"lng":-46.688049},{"nome":"Manioca da Mata (Itaim)","end":"Rua da Mata, 212","bairro":"Itaim Bibi","regiao":"Jardins","lat":-23.580091,"lng":-46.675985},{"nome":"Shopping JK Iguatemi","end":"Av. Pres. Juscelino Kubitschek, 2041, 3º piso (Shopping JK Iguatemi)","bairro":"Vila Olímpia","regiao":"Jardins","lat":-23.591364,"lng":-46.689766}],"29":[{"nome":"Sampaio Vidal","end":"Rua Sampaio Vidal, 1072","bairro":"Jardim Paulistano","regiao":"Jardins","lat":-23.571184,"lng":-46.689024},{"nome":"Melo Alves","end":"Rua Dr. Melo Alves, 728","bairro":"Cerqueira César","regiao":"Jardins","lat":-23.558838,"lng":-46.668222},{"nome":"Shopping Cidade Jardim","end":"Av. Magalhães de Castro, 12000, 4º piso (Shopping Cidade Jardim)","bairro":"Cidade Jardim","regiao":"Jardins","lat":-23.599033,"lng":-46.69757},{"nome":"Adega Asador (Shops Jardins)","end":"Rua Haddock Lobo, 1626, 3º piso (Shops Jardins)","bairro":"Cerqueira César","regiao":"Jardins","lat":-23.564704,"lng":-46.66918}],"35":[{"nome":"Paulista (Conjunto Nacional)","end":"Av. Paulista, 2073, loja 124 (Conjunto Nacional)","bairro":"Cerqueira César","regiao":"Bixiga / Paulista","lat":-23.559023,"lng":-46.659767},{"nome":"Itaim","end":"Rua Dr. Mário Ferraz, 545","bairro":"Itaim Bibi","regiao":"Jardins","lat":-23.583786,"lng":-46.685912},{"nome":"Real Parque","end":"Av. Duquesa de Goiás, 830","bairro":"Real Parque","regiao":"Zona Sul","lat":-23.610948,"lng":-46.703514}],"38":[{"nome":"Copan","end":"Av. Ipiranga, 200, loja 48 (Edifício Copan)","bairro":"República","regiao":"Centro","lat":-23.546594,"lng":-46.644533},{"nome":"Pinheiros","end":"Rua Mateus Grou, 80","bairro":"Pinheiros","regiao":"Pinheiros / Vila Madalena","lat":-23.565184,"lng":-46.683594}]};
+const PRECO={"1":{"itens":[{"item":"Litrão de cerveja (ambulantes do largo)","preco":"R$ 20"}],"fonte":["https://catracalivre.com.br/gira/cerveja-barata-em-sp/"],"data":"set/2026","nota":"Entrada gratuita. Litrão das barracas do largo."},"3":{"itens":[{"item":"Litrão de Original","preco":"R$ 20"}],"fonte":["https://catracalivre.com.br/gira/cerveja-barata-em-sp/"],"data":"set/2026","nota":""},"4":{"itens":[{"item":"Caipirinha","preco":"R$ 30"},{"item":"Batida de coco","preco":"R$ 28"},{"item":"Goró de Mainha (garrafa)","preco":"R$ 59"}],"fonte":["https://www.portaltela.com/entretenimento/2025/08/18/12-bares-em-sp-com-drinks-mais-acessiveis/"],"data":"ago/2025","nota":""},"5":{"itens":[{"item":"Bolinho de carne com tutano (unidade)","preco":"R$ 13"},{"item":"Arroz de moela","preco":"R$ 40"},{"item":"Moela em salsa verde (300 g)","preco":"R$ 26"},{"item":"Água mineral sem gás 500 ml","preco":"R$ 7"},{"item":"Original 600 ml","preco":"R$ 20"}],"fonte":["https://www.rappi.com.br/restaurantes/900142105-bar-moela"],"data":"out/2026","nota":"No app de delivery (Rappi); na casa costuma ser menos."},"6":{"itens":[{"item":"Esfiha de carne","preco":"R$ 10"},{"item":"Sanduíche de falafel","preco":"R$ 27"},{"item":"Shawarma de carne","preco":"R$ 32"},{"item":"Refrigerante","preco":"R$ 5,50"},{"item":"Cerveja 600 ml","preco":"R$ 15,50"}],"fonte":["https://www.rappi.com.br/restaurantes/900143601-restaurante-al-janiah"],"data":"out/2026","nota":"No app de delivery (Rappi); na casa costuma ser menos."},"11":{"itens":[{"item":"Coquetéis da casa (carta de Caik Lima)","preco":"R$ 37–42"},{"item":"Mojito","preco":"R$ 39"},{"item":"Vermute Soda","preco":"R$ 37"}],"fonte":["https://gastronominho.com.br/bebidas/2026/09/cervejaria-central-nova-carta-coqueteis-caik-lima/","https://www.baressp.com.br/bares/cervejaria-central"],"data":"set/2026","nota":""},"14":{"itens":[{"item":"Menu degustação","preco":"R$ 1.250–1.300","obs":"por pessoa, sem bebidas e serviço; varia com a estação"}],"fonte":["https://economicnewsbrasil.com.br/2025/05/14/quanto-custa-comer-nos-cinco-melhores-restaurantes-do-rj-e-sp-em-2025/","https://www.portalin.com.br/negocios/precos-de-menu-degustacao-nos-restaurantes-brasileiros-com-duas-estrelas-michelin-chegam-a-r-1-027/"],"data":"2025","nota":"Sem bebidas e serviço."},"15":{"itens":[{"item":"Menu Ráscal (buffet à vontade de saladas, antepastos e massas)","preco":"R$ 132–149","obs":"R$ 132 (demais unidades) ou R$ 139 (Itaim, JK, Iguatemi) de dom. jantar a sex. almoço; R$ 149 de sex. jantar a dom. almoço e feriados"},{"item":"Pizza broto tradicional","preco":"R$ 76"},{"item":"Água Crystal 350 ml","preco":"R$ 9,90"},{"item":"Coca-Cola 250 ml (vidro)","preco":"R$ 10,20"},{"item":"Chope Heineken 280 ml","preco":"R$ 18,90"}],"fonte":["https://www.rascal.com.br/wp-content/uploads/rascal_sp_especial.pdf?v=01102026","https://www.rascal.com.br/wp-content/uploads/rascal_sao-paulo-cardapio.pdf?v=01102026","https://www.rascal.com.br/wp-content/uploads/rascal_sp_carta-de-bebidas-e-vinhos.pdf?v=07042026"],"data":"out/2026","nota":"Cardápio oficial."},"16":{"itens":[{"item":"Dadinhos de tapioca","preco":"R$ 32,90–99,90","obs":"mini a grande"},{"item":"Torresmo","preco":"R$ 34,90"},{"item":"Carne de sol na brasa","preco":"R$ 119,90"},{"item":"Água mineral 350 ml","preco":"R$ 8,90"},{"item":"Caipirinhas especiais","preco":"R$ 39,90"}],"fonte":["https://mocoto.com.br/menu-vmd/"],"data":"out/2026","nota":"Cardápio oficial da Vila Medeiros."},"17":{"itens":[{"item":"Menu executivo (entrada, prato e sobremesa)","preco":"R$ 140","obs":"ter a sex, almoço"},{"item":"Massa artesanal (raviolini, capellini…)","preco":"R$ 98"},{"item":"Pratos principais","preco":"R$ 88–196"}],"fonte":["https://www.tudogostoso.com.br/noticias/quanto-custa-um-almoco-para-2-no-arturito-restaurante-da-paola-carosella-em-sao-paulo-a26238.htm"],"data":"fev/2026","nota":"Valores aproximados."},"18":{"itens":[{"item":"Empanada (salteña e outros sabores)","preco":"R$ 14,94","obs":"unidade"},{"item":"Menu Guapa (2 empanadas + salada)","preco":"R$ 54,56"},{"item":"Água sem gás 500 ml","preco":"R$ 10,84"},{"item":"Coca-Cola 350 ml","preco":"R$ 10,34"},{"item":"Heineken 330 ml","preco":"R$ 17,44"}],"fonte":["https://www.rappi.com.br/restaurantes/900681009-la-guapa"],"data":"out/2026","nota":"No app de delivery (Rappi); na loja costuma ser menos."},"19":{"itens":[{"item":"Menu degustação","preco":"R$ 715","obs":"por pessoa; harmonização opcional R$ 540"},{"item":"Menu degustação de sobremesas","preco":"R$ 240","obs":"harmonização opcional R$ 180"}],"fonte":["https://www.seudinheiro.com/2026/lifestyle/por-dentro-de-tres-menus-degustacao-recomendados-pelo-guia-michelin-em-sao-paulo-edvl/"],"data":"abr/2026","nota":""},"21":{"itens":[{"item":"Porco San Zé + o que veio da horta","preco":"R$ 92","obs":"preço de 2023, repetido em matéria atualizada em jan/2026"},{"item":"Hambúrguer de panceta","preco":"R$ 48"},{"item":"Canapés de linguiça de porco caipira","preco":"R$ 68"},{"item":"Menu degustação","preco":"R$ 290","obs":"+ R$ 210 harmonização com drinks"}],"fonte":["https://seucreditodigital.com.br/veja-quanto-custa-comer-no-melhor-restaurante-do-brasil/","https://www.tudogostoso.com.br/noticias/a-casa-do-porco-o-que-tem-no-cardapio-e-quanto-custa-comer-no-unico-restaurante-brasileiro-entre-os-50-melhores-do-mundo-a8826.htm"],"data":"2023","nota":"Preços de 2023; devem ter subido."},"22":{"itens":[{"item":"Menu degustação \"Abrindo Caminhos\"","preco":"R$ 190","obs":"+ R$ 90 harmonização; jantar"}],"fonte":["https://forbes.com.br/forbeslife/2024/07/bar-da-dona-onca-de-janaina-torres-lanca-seu-1o-menu-degustacao/"],"data":"jul/2024","nota":""},"26":{"itens":[{"item":"Pizza Vanzetto","preco":"R$ 41","obs":"molho de tomate, coentro, jalapeño e alho frito"},{"item":"Papardelle com ragu de carne","preco":"R$ 74"},{"item":"Lasanha e almôndegas","preco":"R$ 92"},{"item":"Arancini (2 un.)","preco":"R$ 22"}],"fonte":["https://www.cnnbrasil.com.br/viagemegastronomia/gastronomia/20-novos-restaurantes-em-sao-paulo-para-conhecer-ja/"],"data":"ago/2024","nota":"Preços da inauguração."},"31":{"itens":[{"item":"Menu degustação (11 etapas)","preco":"R$ 790","obs":"ticket médio R$ 490–550"}],"fonte":["https://www.bloomberglinea.com.br/estilo-de-vida/menu-de-r-790-e-reservas-em-alta-como-os-premios-impulsionaram-o-sucesso-do-nelita/"],"data":"set/2026","nota":"Também tem à la carte."},"35":{"itens":[{"item":"Shake proteico","preco":"R$ 22–40","obs":"faixa média informada pelo CEO"}],"fonte":["https://forbes.com.br/forbes-life/2026/03/na-onda-do-whey-bar-de-drinks-proteicos-quer-ser-starbucks-da-proteina/"],"data":"mar/2026","nota":""},"37":{"itens":[{"item":"Guioza de pato com tucupi","preco":"R$ 53"},{"item":"Barriga de porco glaceada com tucupi preto","preco":"R$ 84"},{"item":"Tiradito de melancia","preco":"R$ 42"},{"item":"Banana brûlée","preco":"R$ 38","obs":"sobremesa"}],"fonte":["https://www.cnnbrasil.com.br/viagemegastronomia/gastronomia/20-novos-restaurantes-em-sao-paulo-para-conhecer-ja/"],"data":"ago/2024","nota":"Preços da inauguração. Pratos para dividir."}};
+const REGS=["Todas","Centro","Barra Funda","Bixiga / Paulista","Pinheiros / Vila Madalena","Jardins","Zona Sul","Zona Oeste","Zona Norte","Zona Leste","Várias"]
+  .filter((r,i)=>i===0||r==="Várias"||Object.values(UN).flat().some(u=>u.regiao===r)||D.some(x=>x.r===r));
 const TIPOS=["Todos","Samba","Bar","Restaurante","Alta gastronomia","Rápido / empório"];
+/* Cor de cada tipo: usada nos pinos, nos números dos cards e na legenda */
+const COR={"Samba":"#D9480F","Bar":"#7048E8","Restaurante":"#0B7A63","Alta gastronomia":"#1C64D6","Rápido / empório":"#C2255C"};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -261,13 +287,20 @@ const P=new URLSearchParams(location.search);
 let st={r:REGS.includes(P.get("regiao"))?P.get("regiao"):"Todas",t:TIPOS.includes(P.get("tipo"))?P.get("tipo"):"Todos",q:P.get("q")||""};
 $("#q").value=st.q;
 function chips(el,list,key,count){list.forEach(v=>{const b=document.createElement("button");b.className="chip";b.type="button";b.dataset.v=v;
-  b.innerHTML=esc(v)+(count?`<small>${v===list[0]?D.length:D.filter(x=>x[key]===v).length}</small>`:"");
+  b.innerHTML=(COR[v]?`<i class="dot" style="--c:${COR[v]}"></i>`:"")+esc(v)+(count?"<small></small>":"");
   b.setAttribute("aria-pressed",st[key]===v);
   b.onclick=()=>{st[key]=v;el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.v===v));
     if(key==="r"&&v!=="Todas")openMap(true);render();if(key==="r")$("#achar").scrollIntoView({block:"start"})};
   el.appendChild(b)})}
 chips($("#regs"),REGS,"r",true);chips($("#tipos"),TIPOS,"t");
 
+/* Unidades de um lugar (com coordenadas) e regiões em que ele aparece */
+const units=x=>UN[x.n]||(GEO[x.n]?[{nome:"",end:x.ref,regiao:x.r,lat:GEO[x.n][0],lng:GEO[x.n][1]}]:[]);
+const regsOf=x=>UN[x.n]?[...new Set([x.r,...UN[x.n].map(u=>u.regiao)])]:[x.r];
+const inReg=(x,r)=>r==="Todas"||regsOf(x).includes(r);
+/* No mapa, com uma região escolhida, aparecem só as unidades daquela região */
+const unitsIn=(x,r)=>units(x).map((u,i)=>({...u,i})).filter(u=>r==="Todas"||r==="Várias"||!UN[x.n]||u.regiao===r);
+const numOf=n=>shown.findIndex(x=>x.n===n)+1;
 function card(x){
  const maps="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.q+" São Paulo");
  const h=(x.ig||"").replace("?",""),unc=(x.ig||"").endsWith("?");
@@ -275,15 +308,33 @@ function card(x){
  const site=x.site?`<a href="${x.site}" target="_blank" rel="noopener">Site</a>`:"";
  const open=x.post&&opened.has(x.n);
  const foto=x.post?`<button class="see" type="button" data-foto="${x.n}" aria-expanded="${open}">${open?"Esconder foto":"Ver foto"}</button>`:"";
- const pin=GEO[x.n]?`<button class="see" type="button" data-n="${x.n}">Ver no mapa</button>`:"";
- return `<article class="card" id="l${x.n}"><div class="top"><h2>${esc(x.name)}</h2><span class="num">#${x.n}</span></div>
+ const u=UN[x.n];
+ const pin=!u&&GEO[x.n]?`<button class="see" type="button" data-n="${x.n}" data-u="0">Ver no mapa</button>`:"";
+ const onde=u?`<div class="loc"><b>Unidades (${u.length}):</b>${(li=>u.length>5?`<details><summary>Ver as ${u.length} unidades</summary>${li}</details>`:li)(`<ul class="units">${u.map((y,i)=>`<li><button type="button" data-n="${x.n}" data-u="${i}" title="Ver no mapa"><b>${esc(y.nome)}</b> · ${esc(y.end)}</button></li>`).join("")}</ul>`)}</div>`
+   :`<p class="loc"><b>Onde:</b> ${esc(x.ref)}</p>`;
+ const pr=PRECO[x.n]&&PRECO[x.n].itens.length,openP=pr&&openedP.has(x.n);
+ const preco=pr?`<button class="see" type="button" data-preco="${x.n}" aria-expanded="${!!openP}">${openP?"Esconder preços":"Ver preços"}</button>`:"";
+ return `<article class="card" id="l${x.n}"><div class="top"><h2>${esc(x.name)}</h2><span class="badge" style="--c:${COR[x.t]}" title="Número no mapa">${numOf(x.n)}</span></div>
  <div class="pills"><span class="pill">${esc(x.t)}</span><span class="pill reg">${esc(x.b)}</span></div>
- <p class="desc">${esc(x.d)}</p><p class="loc"><b>Onde:</b> ${esc(x.ref)}</p>
+ <p class="desc">${esc(x.d)}</p>${onde}
  ${x.hr?`<p class="loc"><b>Quando:</b> ${esc(x.hr)}</p>`:""}
  ${x.info?`<p class="loc">${esc(x.info)}</p>`:""}
  ${x.note?`<p class="note">${esc(x.note)}</p>`:""}
+ ${openP?precos(x):""}
  ${open?embed(x):""}
- <div class="links">${pin}${foto}<a href="${maps}" target="_blank" rel="noopener">Google Maps</a>${ig}${site}</div></article>`}
+ <div class="links">${pin}${preco}${foto}<a href="${maps}" target="_blank" rel="noopener">Google Maps</a>${ig}${site}</div></article>`}
+
+/* ===== PREÇOS =====
+   "Ver preços" abre alguns itens com preço (água ou refri, pratos famosos, um drink),
+   para dar noção do gasto sem usar escala de $$$. */
+const openedP=new Set();
+const firstDrink=i=>/água|agua|coca|refri/i.test(i.item)?0:1;
+function precos(x){
+  const p=PRECO[x.n],it=[...p.itens].sort((a,b)=>firstDrink(a)-firstDrink(b));
+  const fontes=(p.fonte||[]).map((f,i)=>`<a href="${esc(f)}" target="_blank" rel="noopener">${i+1}</a>`).join(" ");
+  return `<div class="precos"><ul>${it.map(i=>`<li><span>${esc(i.item)}${i.obs?` <small>${esc(i.obs)}</small>`:""}${i.delivery?' <small>(app de delivery)</small>':""}</span><b>${esc(i.preco)}</b></li>`).join("")}</ul>
+  <p>${p.nota?esc(p.nota)+" ":""}Preços de ${esc(p.data||"2025–26")}, podem ter mudado.${fontes?" Fontes: "+fontes:""}</p></div>`;
+}
 
 /* ===== FOTOS =====
    Embed oficial do Instagram, só quando a pessoa pede ("Ver foto").
@@ -303,7 +354,7 @@ function processEmbeds(){
 /* ===== MAPA =====
    Leaflet com o mapa do OpenStreetMap (no tema escuro, as cores dos tiles são invertidas por CSS). Mostra só os lugares filtrados.
    Coordenadas por número da lista (n), geocodificadas pelo endereço do card.
-   Redes (Ráscal, La Guapa) aparecem por uma unidade; Wrappd e WeProtein não têm endereço fixo.
+   Lugares com várias unidades usam as coordenadas de UN; Wrappd e WeProtein não têm endereço fixo.
    O Bar do Chagas é aproximado: a Rua João de Barros não está no OpenStreetMap. */
 const GEO={1:[-23.53925,-46.64973],2:[-23.53151,-46.65649],3:[-23.52665,-46.65930],4:[-23.53018,-46.66119],5:[-23.54022,-46.65185],
 6:[-23.55747,-46.64521],7:[-23.55822,-46.64663],8:[-23.54288,-46.64696],9:[-23.53389,-46.64865],10:[-23.5602,-46.68622],
@@ -314,35 +365,41 @@ const GEO={1:[-23.53925,-46.64973],2:[-23.53151,-46.65649],3:[-23.52665,-46.6593
 31:[-23.56056,-46.69804],32:[-23.56646,-46.68907],33:[-23.54752,-46.64295],36:[-23.55607,-46.66193],37:[-23.55207,-46.69169],
 38:[-23.54668,-46.64395]};
 const wide=matchMedia("(min-width:960px)");
-let map,layer,tiles,markers={},sel=0,shown=[];
+let map,layer,tiles,markers={},sel="",shown=[];
 const mapOn=()=>wide.matches||!$("#mapcol").classList.contains("closed");
 function initMap(){
   if(map||!window.L)return;
   map=L.map("map",{scrollWheelZoom:false,zoomSnap:.5});
   layer=L.featureGroup().addTo(map);
   setTiles();
-  map.on("popupopen",e=>{sel=e.popup._source.n;paintPins()});
-  map.on("popupclose",()=>{sel=0;paintPins()});
+  map.on("popupopen",e=>{sel=e.popup._source.k;paintPins()});
+  map.on("popupclose",()=>{sel="";paintPins()});
 }
 function setTiles(){
   if(tiles)return;
   tiles=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     {maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 }
-const icon=on=>L.divIcon({className:"",html:`<div class="pin${on?" on":""}"></div>`,iconSize:[20,20],iconAnchor:[10,10],popupAnchor:[0,-8]});
-function paintPins(){for(const n in markers)markers[n].setIcon(icon(+n===sel))}
-const popup=x=>`<b>${esc(x.name)}</b><p>${esc(x.t)} · ${esc(x.b)}</p><p>${esc(x.ref)}</p>${x.hr?`<p>${esc(x.hr)}</p>`:""}
-  <div class="pl"><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(x.q+" São Paulo")}" target="_blank" rel="noopener">Como chegar</a><button type="button" data-card="${x.n}">Ver detalhes</button></div>`;
+const icon=(x,on)=>L.divIcon({className:"",html:`<div class="pin${on?" on":""}" style="--c:${COR[x.t]}">${numOf(x.n)}</div>`,iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12]});
+function paintPins(){for(const k in markers)markers[k].setIcon(icon(markers[k].x,k===sel))}
+const popup=(x,u)=>`<b>${esc(x.name)}</b><p>${esc(x.t)} · ${esc(u.nome||x.b)}</p><p>${esc(u.end)}</p>${x.hr?`<p>${esc(x.hr)}</p>`:""}
+  <div class="pl"><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((u.nome?x.name+" "+u.end:x.q)+" São Paulo")}" target="_blank" rel="noopener">Como chegar</a><button type="button" data-card="${x.n}">Ver detalhes</button></div>`;
 function drawMap(fit=true){
   if(!mapOn())return;
   initMap();if(!map)return;
   map.invalidateSize();
   layer.clearLayers();markers={};
-  const pts=shown.filter(x=>GEO[x.n]);
-  pts.forEach(x=>{const m=L.marker(GEO[x.n],{icon:icon(x.n===sel),title:x.name,riseOnHover:true}).bindPopup(popup(x),{maxWidth:260});m.n=x.n;m.addTo(layer);markers[x.n]=m});
-  if(fit){if(pts.length)map.fitBounds(layer.getBounds(),{padding:[28,28],maxZoom:16});else map.setView([-23.555,-46.655],12)}
-  const off=shown.length-pts.length;
-  $("#maplabel").innerHTML=`<b>${pts.length} no mapa</b> · ${st.r==="Todas"?"todas as regiões":esc(st.r)}`+(off?` · ${off} sem endereço fixo (delivery ou várias unidades)`:"");
+  let places=0,pins=0;
+  shown.forEach(x=>{const us=unitsIn(x,st.r);if(us.length)places++;
+    us.forEach(u=>{const k=x.n+":"+u.i;pins++;
+      const m=L.marker([u.lat,u.lng],{icon:icon(x,k===sel),title:x.name+(u.nome?" ("+u.nome+")":""),riseOnHover:true}).bindPopup(popup(x,u),{maxWidth:260});
+      m.k=k;m.x=x;m.addTo(layer);markers[k]=m})});
+  if(fit){if(pins)map.fitBounds(layer.getBounds(),{padding:[28,28],maxZoom:16});else map.setView([-23.555,-46.655],12)}
+  const off=shown.length-places;
+  const what=[st.t!=="Todos"?st.t:"",st.r!=="Todas"?st.r:"todas as regiões"].filter(Boolean).map(esc).join(" · ");
+  $("#maplabel").innerHTML=`<b>${places} ${places===1?"lugar":"lugares"} no mapa</b>${pins>places?` (${pins} endereços)`:""} · ${what}`+(off?` · ${off} sem endereço fixo (delivery)`:"");
+  const tipos=[...new Set(shown.map(x=>x.t))];
+  $("#legend").innerHTML=tipos.length>1?tipos.map(t=>`<span><i class="dot" style="--c:${COR[t]}"></i>${esc(t)}</span>`).join(""):"";
 }
 function openMap(on){
   const c=$("#mapcol");c.classList.toggle("closed",!on);
@@ -350,13 +407,13 @@ function openMap(on){
   $("#maptoggle span").textContent=on?"Esconder mapa":"Ver no mapa";
   if(on)drawMap();
 }
-function focusPlace(n){
-  const x=D.find(y=>y.n===n);
-  if(!shown.includes(x)){st={r:"Todas",t:"Todos",q:""};$("#q").value="";
+function focusPlace(n,i=0){
+  const x=D.find(y=>y.n===n),u=units(x)[i];
+  if(!shown.includes(x)||!unitsIn(x,st.r).some(y=>y.i===i)){st={r:"Todas",t:"Todos",q:""};$("#q").value="";
     document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.v==="Todas"||c.dataset.v==="Todos"));render()}
   openMap(true);
   if(!map)return;
-  map.setView(GEO[n],16);markers[n].openPopup();
+  map.setView([u.lat,u.lng],16);markers[n+":"+i]?.openPopup();
   if(!wide.matches)$("#mapcol").scrollIntoView({block:"center"});
 }
 function showCard(n){
@@ -376,7 +433,15 @@ $("#grid").addEventListener("click",e=>{
     if(on){art.querySelector(".links").insertAdjacentHTML("beforebegin",embed(D.find(x=>x.n===n)));processEmbeds()}
     else art.querySelector(".ig")?.remove();
     return}
-  const b=e.target.closest("button[data-n]");if(b)focusPlace(+b.dataset.n)});
+  const p=e.target.closest("button[data-preco]");
+  if(p){
+    const n=+p.dataset.preco,art=p.closest(".card"),on=!openedP.has(n);
+    on?openedP.add(n):openedP.delete(n);
+    p.textContent=on?"Esconder preços":"Ver preços";p.setAttribute("aria-expanded",on);
+    if(on)(art.querySelector(".ig")||art.querySelector(".links")).insertAdjacentHTML("beforebegin",precos(D.find(x=>x.n===n)));
+    else art.querySelector(".precos")?.remove();
+    return}
+  const b=e.target.closest("button[data-n]");if(b)focusPlace(+b.dataset.n,+(b.dataset.u||0))});
 
 /* ===== COMPARTILHAR ===== */
 const BASE="https://estevaouyra.github.io/bora-frequentar/";
@@ -402,10 +467,14 @@ function syncURL(){
 }
 function render(){
  const q=norm(st.q.trim());
- shown=D.filter(x=>(st.r==="Todas"||x.r===st.r)&&(st.t==="Todos"||x.t===st.t)&&(!q||norm([x.name,x.d,x.b,x.ref,x.t,x.hr||"",x.info||""].join(" ")).includes(q)));
+ const hit=x=>(st.t==="Todos"||x.t===st.t)&&(!q||norm([x.name,x.d,x.b,x.ref,x.t,x.hr||"",x.info||"",...(UN[x.n]||[]).map(u=>u.nome+" "+u.end)].join(" ")).includes(q));
+ const base=D.filter(hit);
+ shown=base.filter(x=>inReg(x,st.r));
+ /* A contagem de cada região respeita o tipo e a busca escolhidos */
+ document.querySelectorAll("#regs .chip").forEach(c=>{const k=base.filter(x=>inReg(x,c.dataset.v)).length;c.querySelector("small").textContent=k;c.classList.toggle("zero",!k)});
  $("#grid").innerHTML=shown.map(card).join("");
  if(shown.some(x=>opened.has(x.n)))processEmbeds();
- $("#count").innerHTML=`<b>${shown.length}</b> `+(shown.length===1?"lugar":"lugares")+(st.r!=="Todas"?" em "+esc(st.r):"");
+ $("#count").innerHTML=`<b>${shown.length}</b> `+(shown.length===1?"lugar":"lugares")+(st.t!=="Todos"?" · "+esc(st.t):"")+(st.r!=="Todas"?" em "+esc(st.r):"");
  $("#empty").hidden=shown.length>0;
  syncURL();drawMap();
  document.querySelectorAll(".row").forEach(r=>{const c=r.querySelector('[aria-pressed="true"]');if(c)r.scrollLeft=c.offsetLeft-r.offsetLeft-(r.clientWidth-c.offsetWidth)/2});
