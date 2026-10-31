@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cervejaria Central · Bora frequentar SP</title>
+<meta name="description" content="Brewpub com cerveja própria (a Estopim é a clássica) e sanduíches. Bar · Vila Buarque / Santa Cecília.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://estevaouyra.github.io/bora-frequentar/cervejaria-central/">
+<meta property="og:title" content="Cervejaria Central · Bora frequentar SP">
+<meta property="og:description" content="Brewpub com cerveja própria (a Estopim é a clássica) e sanduíches. Bar · Vila Buarque / Santa Cecília.">
+<meta property="og:image" content="https://estevaouyra.github.io/bora-frequentar/cervejaria-central/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0D6B5B">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#F4F6F3; --surface:#FFFFFF; --ink:#18221F; --muted:#5C6A65; --line:#DCE3DF;
+  --accent:#0D6B5B; --accent-soft:#DDEFE9; --mark:#E2A52B; --mark-soft:#FBF0D6;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
+  --accent:#4FC2A8; --accent-soft:#16332C; --mark:#F0BC52; --mark-soft:#3A2F14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
+  --accent:#4FC2A8; --accent-soft:#16332C; --mark:#F0BC52; --mark-soft:#3A2F14; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;font-size:16px;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;
+  padding:0 max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:760px;margin:0 auto}
+.voltar{display:inline-block;margin-top:20px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none}
+.eyebrow{display:block;margin:24px 0 8px;font:600 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:800 clamp(40px,10vw,72px)/.95 var(--display);letter-spacing:-.03em;margin:0;text-wrap:balance}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.pill{font-size:13px;font-weight:600;padding:3px 9px;border-radius:6px;background:var(--mark-soft);color:var(--ink)}
+.pill.t{background:var(--c);color:#fff}
+.desc{font-size:clamp(18px,2.6vw,21px);line-height:1.45;margin:16px 0 0;text-wrap:pretty}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 15px var(--body);text-decoration:none;border-radius:12px;padding:12px 18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.wa{background:#25D366;border-color:#25D366;color:#0B2A17}
+.btn svg{width:18px;height:18px;flex:none}
+@media (max-width:520px){.cta .btn{flex:1 1 calc(50% - 5px)}.cta .btn.wa{flex-basis:100%}}
+.btn:focus-visible,.voltar:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+section{margin-top:30px}
+h2{font:800 22px/1.15 var(--display);margin:0 0 10px;letter-spacing:-.01em}
+.fatos{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 16px}
+.fatos dl{margin:0}
+.fatos div{display:grid;grid-template-columns:90px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.fatos div:first-child{border-top:0}
+.fatos dt{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-top:3px}
+.fatos dd{margin:0}
+.fatos ul{margin:0;padding:0;list-style:none}
+.fatos li+li{margin-top:2px}
+.fatos a{color:var(--accent)}
+.note{font-size:14px;margin:12px 0 0;padding:8px 11px;border-left:3px solid var(--mark);background:var(--mark-soft);border-radius:0 8px 8px 0}
+#map{height:min(55vh,380px);border:1px solid var(--line);border-radius:14px;background:var(--surface);z-index:0}
+.pin{width:26px;height:26px;border-radius:50%;background:var(--c);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.leaflet-container{font-family:var(--body)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink)}
+.leaflet-popup-content a{color:var(--accent);font-weight:600}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}
+.precos{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.precos ul{list-style:none;margin:0;padding:0}
+.precos li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)}
+.precos li:first-child{border-top:0}
+.precos li small{color:var(--muted)}
+.precos li b{flex:none;font-variant-numeric:tabular-nums;font-weight:600}
+.precos p{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.precos p a{color:var(--accent)}
+.ig .instagram-media{min-width:0!important;max-width:100%!important;width:100%!important;margin:0!important;border-radius:14px!important}
+.porque{margin-top:36px;padding:20px;border-radius:14px;background:var(--accent);color:var(--bg)}
+.porque h2{color:inherit}
+.porque p{margin:0 0 14px}
+.porque .btn{border-color:transparent;background:var(--bg);color:var(--ink)}
+footer{margin-top:26px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<!-- Página gerada por ferramentas/bora-frequentar/gerar.py. Não edite à mão: mude os dados em bora-frequentar/index.html e rode o gerador. -->
+<div class="wrap">
+<a class="voltar" href="../">← Todos os lugares</a>
+<span class="eyebrow">Bora frequentar SP · #11 da lista</span>
+<h1>Cervejaria Central</h1>
+<div class="pills"><span class="pill t" style="--c:#7048E8">Bar</span><span class="pill">Vila Buarque / Santa Cecília</span></div>
+<p class="desc">Brewpub com cerveja própria (a Estopim é a clássica) e sanduíches.</p>
+
+<div class="cta">
+  <button class="btn wa" type="button" id="convidar"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3Z"/></svg>Convidar alguém</button>
+  <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Cervejaria+Central+Rua+Jesu%C3%ADno+Pascoal+101+S%C3%A3o+Paulo" target="_blank" rel="noopener">Como chegar</a>
+  <a class="btn" href="https://www.instagram.com/cervejariacentralsp/" target="_blank" rel="noopener">Instagram</a>
+</div>
+
+<section><h2>Informações</h2><div class="fatos"><dl><div><dt>Onde</dt><dd>Rua Jesuíno Pascoal, 101<br><small>Vila Buarque / Santa Cecília</small></dd></div><div><dt>Quando</dt><dd>Ter a qui, 18h–0h; sex, 18h–0h30; sáb, 16h–0h30</dd></div><div><dt>Mais</dt><dd>Reservas por DM ou (11) 96590-7347.</dd></div><div><dt>Links</dt><dd><a href="https://www.instagram.com/cervejariacentralsp/" target="_blank" rel="noopener">@cervejariacentralsp</a></dd></div></dl></div></section>
+<section><h2>Quanto custa</h2><div class="precos"><ul><li><span>Coquetéis da casa (carta de Caik Lima)</span><b>R$ 37–42</b></li><li><span>Mojito</span><b>R$ 39</b></li><li><span>Vermute Soda</span><b>R$ 37</b></li></ul><p>Preços de set/2026, podem ter mudado. Fontes: <a href="https://gastronominho.com.br/bebidas/2026/09/cervejaria-central-nova-carta-coqueteis-caik-lima/" target="_blank" rel="noopener">1</a> <a href="https://www.baressp.com.br/bares/cervejaria-central" target="_blank" rel="noopener">2</a></p></div></section>
+<section><h2>No mapa</h2><div id="map" role="region" aria-label="Mapa"></div></section>
+<section><h2>No Instagram</h2><div class="ig"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/De9qycJxBLE/" data-instgrm-version="14"><a href="https://www.instagram.com/p/De9qycJxBLE/" target="_blank" rel="noopener">Ver post de Cervejaria Central no Instagram</a></blockquote></div></section>
+
+<section class="porque">
+  <h2>Por que este lugar está aqui</h2>
+  <p>Cervejaria Central está numa lista de bares e restaurantes de São Paulo que se posicionaram em defesa da democracia e agora estão sendo alvo de boicote nas redes. A resposta é casa cheia.</p>
+  <a class="btn" href="../">Ver os 38 lugares da lista</a>
+</section>
+<footer>Informações conferidas em out/2026; horários e preços mudam, vale checar antes de ir.</footer>
+</div>
+
+<script src="../convite.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const X={"n": 11, "name": "Cervejaria Central", "ig": "cervejariacentralsp", "t": "Bar", "r": "Centro", "d": "Brewpub com cerveja própria (a Estopim é a clássica) e sanduíches.", "b": "Vila Buarque / Santa Cecília", "ref": "Rua Jesuíno Pascoal, 101", "q": "Cervejaria Central Rua Jesuíno Pascoal 101", "hr": "Ter a qui, 18h–0h; sex, 18h–0h30; sáb, 16h–0h30", "info": "Reservas por DM ou (11) 96590-7347.", "post": "p/De9qycJxBLE"};
+const EXTRA={"unidades": null, "precos": {"itens": [{"item": "Coquetéis da casa (carta de Caik Lima)", "preco": "R$ 37–42"}, {"item": "Mojito", "preco": "R$ 39"}, {"item": "Vermute Soda", "preco": "R$ 37"}], "fonte": ["https://gastronominho.com.br/bebidas/2026/09/cervejaria-central-nova-carta-coqueteis-caik-lima/", "https://www.baressp.com.br/bares/cervejaria-central"], "data": "set/2026", "nota": ""}};
+const PONTOS=[{"nome": "", "end": "Rua Jesuíno Pascoal, 101", "lat": -23.54103, "lng": -46.64965}];
+document.getElementById("convidar").onclick=()=>Convite.abrir(X,EXTRA);
+if(PONTOS.length&&window.L){
+  const map=L.map("map",{scrollWheelZoom:false});
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+  const g=L.featureGroup().addTo(map);
+  const icon=L.divIcon({className:"",html:'<div class="pin" style="--c:#7048E8"></div>',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12]});
+  PONTOS.forEach(p=>L.marker([p.lat,p.lng],{icon}).addTo(g).bindPopup(`<b>${p.nome||X.name}</b><br>${p.end}<br><a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(X.name+" "+p.end+" São Paulo")}">Como chegar</a>`));
+  PONTOS.length>1?map.fitBounds(g.getBounds(),{padding:[30,30]}):map.setView([PONTOS[0].lat,PONTOS[0].lng],16);
+}
+(()=>{const s=document.createElement("script");s.async=true;s.src="https://www.instagram.com/embed.js";document.body.appendChild(s)})();
+</script>
+</body>
+</html>
