@@ -3,17 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Guia dos 38 bares e restaurantes de SP da lista: bairro, referência, mapa e Instagram.">
-<title>Bora Frequentar SP</title>
+<title>Pessoal, urgente! Bora frequentar SP</title>
+<meta name="description" content="38 bares e restaurantes de São Paulo que se posicionaram em defesa da democracia estão sendo boicotados. Bora encher esses lugares: lista, mapa por bairro e links.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://estevaouyra.github.io/bora-frequentar/">
+<meta property="og:title" content="Pessoal, urgente! Bora frequentar SP">
+<meta property="og:description" content="38 bares e restaurantes de SP que defenderam a democracia estão sendo boicotados. Escolha um perto de você e bora encher esses lugares.">
+<meta property="og:image" content="https://estevaouyra.github.io/bora-frequentar/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0D6B5B">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-/* Layout: guia de bolso — busca + filtros fixos no topo, lista de cards em coluna/grade */
+/* Layout: chamado grande no topo; depois busca + filtros fixos, lista de cards e mapa do que está filtrado */
 :root{
   --bg:#F4F6F3; --surface:#FFFFFF; --ink:#18221F; --muted:#5C6A65; --line:#DCE3DF;
   --accent:#0D6B5B; --accent-soft:#DDEFE9; --mark:#E2A52B; --mark-soft:#FBF0D6;
   --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --barh:150px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
@@ -22,29 +34,72 @@
   --bg:#111816; --surface:#18211E; --ink:#E7EEEA; --muted:#9AA8A2; --line:#2A3733;
   --accent:#4FC2A8; --accent-soft:#16332C; --mark:#F0BC52; --mark-soft:#3A2F14; color-scheme:dark}
 *{box-sizing:border-box}
-html{color-scheme:light}
-body{margin:0;font-size:15px;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+html{color-scheme:light;scroll-behavior:smooth}
+body{margin:0;font-size:15px;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.wrap{max-width:1080px;margin:0 auto}
-header{padding-block:28px 12px}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,46px);line-height:1.02;margin:0;letter-spacing:-.01em;text-wrap:balance}
-h1 span{color:var(--accent)}
-.home{display:inline-block;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:12px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:1000;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto}
+h1,.sec{font-family:var(--display);font-weight:800;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.home{display:inline-block;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none}
 .home:hover{color:var(--accent)}
-.lede{color:var(--muted);margin:10px 0 0;max-width:62ch}
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+
+/* Chamado */
+.hero{padding-block:22px 40px;border-bottom:1px solid var(--line)}
+.eyebrow{display:block;margin:28px 0 10px;font:600 13px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.hero h1{font-size:clamp(56px,17vw,136px);line-height:.88;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;display:inline-block;background:var(--mark);color:#18221F;padding:0 .1em .04em;border-radius:.07em;transform:rotate(-1.5deg);margin-top:.06em}
+.call{font-size:clamp(17px,2.3vw,21px);line-height:1.45;max-width:54ch;margin:22px 0 0;text-wrap:pretty}
+.call b{font-weight:600}
+.how{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:15px}
+.how li{display:flex;gap:8px;align-items:baseline}
+.how li span{font:800 15px var(--display);color:var(--accent)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--body);text-decoration:none;border-radius:12px;padding:12px 18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.wa{background:#25D366;border-color:#25D366;color:#0B2A17}
+.btn svg{width:18px;height:18px;flex:none}
+@media (max-width:520px){.hero .cta .btn{flex:1 1 100%;justify-content:center}}
+.btn:focus-visible,.chip:focus-visible,.see:focus-visible,.mini:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+
+/* Busca e filtros */
+.finder{scroll-margin-top:0}
+.sec{font-size:clamp(26px,4.5vw,36px);margin:30px 0 4px}
+.sub{color:var(--muted);margin:0 0 4px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:900;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 #q{width:100%;font:inherit;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 #q:focus{outline:2px solid var(--accent);outline-offset:1px}
 .row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .row::-webkit-scrollbar{display:none}
 .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;flex:none;margin-right:2px;font-weight:600}
 .chip{flex:none;font:500 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 11px;border-radius:999px;cursor:pointer}
+.chip small{font-size:11px;color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.chip:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
-.count{font-size:13px;color:var(--muted);margin:14px 0 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.75}
+
+/* Resultado: lista + mapa (lado a lado no computador, mapa recolhível no celular) */
+.main{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+.status{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.count{font-size:14px;color:var(--muted);margin:0;margin-right:auto}
+.count b{color:var(--ink)}
+.mini{font:600 13px var(--body);color:var(--accent);background:var(--surface);border:1px solid var(--line);padding:6px 11px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.mini:hover{border-color:var(--accent)}
+.mini svg{width:15px;height:15px}
+.mapcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mapcol.closed{display:none}
+#map{width:100%;height:min(62vh,420px);border:1px solid var(--line);border-radius:12px;background:var(--surface);z-index:0}
+.maphead{font-size:13px;color:var(--muted);margin:0}
+.maphead b{color:var(--ink)}
+@media (min-width:960px){
+  .main{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+  .mapcol,.mapcol.closed{display:flex;grid-column:2;grid-row:1;position:sticky;top:calc(var(--barh) + 14px)}
+  #map{height:calc(100vh - var(--barh) - 70px);min-height:380px}
+  .results{grid-column:1;grid-row:1}
+  #maptoggle{display:none}
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0;scroll-margin-top:calc(var(--barh) + 16px);transition:box-shadow .3s,border-color .3s}
+.card.flash{border-color:var(--mark);box-shadow:0 0 0 3px var(--mark-soft)}
 .top{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
 .card h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0;line-height:1.15;min-width:0}
 .num{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
@@ -59,56 +114,94 @@ h1 span{color:var(--accent)}
 .links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);border:1px solid var(--line);padding:5px 10px;border-radius:8px}
 .links a:hover{border-color:var(--accent)}
 .links a.soft{color:var(--muted);font-weight:500}
-.empty{color:var(--muted);padding:30px 0;text-align:center}
-.views{display:flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;width:max-content;margin-top:16px}
-.views button{font:600 14px var(--body);border:0;background:transparent;color:var(--muted);padding:8px 18px;border-radius:9px;cursor:pointer}
-.views button[aria-selected="true"]{background:var(--accent);color:var(--bg)}
-.views button:focus-visible,.card button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
 .card button.see{font:600 13px var(--body);color:var(--accent);background:var(--accent-soft);border:1px solid transparent;padding:5px 10px;border-radius:8px;cursor:pointer}
-#mapview{padding-top:14px;display:flex;flex-direction:column;gap:10px}
-.mapframe{width:100%;height:min(72vh,640px);border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-.maphead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted)}
-.maphead b{color:var(--ink)}
-.maphead button{font:600 13px var(--body);color:var(--accent);background:none;border:1px solid var(--line);padding:5px 10px;border-radius:8px;cursor:pointer}
-.places{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
 .ig{min-width:0}
 .ig .instagram-media,.ig iframe{min-width:0!important;max-width:100%!important;width:100%!important;margin:0!important}
 .ig .instagram-media{background:var(--surface);border:1px solid var(--line)!important;border-radius:10px!important;box-shadow:none!important;padding:14px!important}
 .ig .instagram-media a{font-size:13px;font-weight:600;color:var(--accent)}
+
+/* Mapa (Leaflet) com as cores da página */
+.pin{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.pin.on{background:var(--mark);width:26px;height:26px;margin:-3px 0 0 -3px}
+.leaflet-container{font-family:var(--body);background:var(--surface)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink);box-shadow:0 3px 14px rgba(0,0,0,.25)}
+.leaflet-popup-content{margin:12px 14px;font-size:13px;line-height:1.4}
+.leaflet-popup-content b{display:block;font:600 16px var(--display);margin-bottom:2px}
+.leaflet-popup-content p{margin:4px 0}
+.leaflet-popup-content .pl{display:flex;gap:10px;margin-top:8px}
+.leaflet-popup-content a,.leaflet-popup-content button{font:600 13px var(--body);color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:none}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-bar a{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.leaflet-control-attribution{font-size:10px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(.9)}
+
+/* Rodapé */
+.spread{margin-top:40px;padding:22px;border-radius:14px;background:var(--accent);color:var(--bg)}
+.spread h2{font:800 clamp(22px,3.6vw,30px)/1.1 var(--display);margin:0 0 6px;letter-spacing:-.01em}
+.spread p{margin:0 0 14px;max-width:60ch}
+.spread .btn{border-color:transparent}
+.spread .btn.light{background:var(--bg);color:var(--ink)}
 footer{margin-top:28px;font-size:13px;color:var(--muted);max-width:70ch}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
 <div class="wrap">
-<header>
+<header class="hero">
   <a class="home" href="../">← Estevão Uyrá</a>
-  <h1>Bora <span>frequentar</span></h1>
-  <p class="lede">Os 38 bares e restaurantes da lista, com bairro, ponto de referência e links. Filtre por região ou tipo, ou veja todos no mapa.</p>
-  <div class="views" role="tablist">
-    <button id="tab-list" role="tab" aria-selected="true">Lista</button>
-    <button id="tab-map" role="tab" aria-selected="false">Mapa</button>
+  <span class="eyebrow">Bora frequentar SP</span>
+  <h1>Pessoal,<br><em>urgente!</em></h1>
+  <p class="call">Estes <b>38 bares, botecos e restaurantes de São Paulo</b> se posicionaram em defesa da democracia e agora estão na mira de listas de boicote que circulam nas redes. A resposta é casa cheia: escolha um perto de você, chame a turma e passe este link adiante.</p>
+  <ol class="how">
+    <li><span>1</span>Escolha um lugar</li>
+    <li><span>2</span>Vá, consuma, avalie bem no Google</li>
+    <li><span>3</span>Mande este site pra todo mundo</li>
+  </ol>
+  <div class="cta">
+    <a class="btn primary" href="#achar">Escolher pelo bairro ↓</a>
+    <a class="btn wa" id="wa-top" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3Z"/></svg>Mandar no WhatsApp</a>
+    <button class="btn share" type="button">Compartilhar link</button>
   </div>
 </header>
 
-<section id="mapview" hidden>
-  <div class="maphead"><span id="maplabel"></span><button id="mapall" type="button" hidden>Ver todos</button></div>
-  <iframe id="mapframe" class="mapframe" title="Mapa dos lugares" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-  <div class="places" id="places"></div>
+<section class="finder" id="achar">
+  <h2 class="sec">Escolha o bairro</h2>
+  <p class="sub">Toque numa região para ver os lugares dela na lista e no mapa.</p>
+  <div class="bar" id="bar">
+    <input id="q" type="search" placeholder="Buscar nome, bairro, comida, samba…" aria-label="Buscar">
+    <div class="row" id="regs"><span class="lbl">Região</span></div>
+    <div class="row" id="tipos"><span class="lbl">Tipo</span></div>
+  </div>
+
+  <div class="main">
+    <div class="mapcol closed" id="mapcol">
+      <p class="maphead" id="maplabel"></p>
+      <div id="map" role="region" aria-label="Mapa dos lugares filtrados"></div>
+    </div>
+    <div class="results">
+      <div class="status">
+        <p class="count" id="count"></p>
+        <button class="mini" id="maptoggle" type="button" aria-controls="mapcol" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14"/></svg><span>Ver no mapa</span></button>
+        <button class="mini share-sel" type="button" hidden>Mandar esta seleção</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>Nada encontrado com esses filtros.</p>
+    </div>
+  </div>
 </section>
 
-<div id="listview">
-<div class="bar">
-  <input id="q" type="search" placeholder="Buscar nome, bairro, comida…" aria-label="Buscar">
-  <div class="row" id="regs"><span class="lbl">Região</span></div>
-  <div class="row" id="tipos"><span class="lbl">Tipo</span></div>
-</div>
-
-<p class="count" id="count"></p>
-<div class="grid" id="grid"></div>
-<p class="empty" id="empty" hidden>Nada encontrado com esses filtros.</p>
-</div>
+<section class="spread">
+  <h2>Passe adiante</h2>
+  <p>Quanto mais gente souber, mais cheio fica. Mande no grupo da família, no grupo do trampo, poste nos stories.</p>
+  <div class="cta" style="margin-top:0">
+    <a class="btn wa" id="wa-bottom" href="#" target="_blank" rel="noopener">Mandar no WhatsApp</a>
+    <a class="btn light" href="stories.png" download="bora-frequentar-stories.png">Baixar imagem pros stories</a>
+    <button class="btn light share" type="button">Copiar link</button>
+  </div>
+</section>
 
 <footer>
   Se algum perfil de Instagram aparecer marcado com (?), é o mais provável, mas ainda não confirmado. Endereços conferidos em guias e matérias recentes. Horários, telefones e unidades foram tirados das bios do Instagram em out/2026, mas mudam: vale checar antes de ir. As fotos são embeds oficiais de posts de cada perfil e só carregam quando você toca em “Ver foto”. Nomes da lista corrigidos quando havia grafia diferente (ex.: Moquifo → Muquifo, Jequitaia → Jiquitaia, Nellita → Nelita).
@@ -158,12 +251,23 @@ const D=[
 ];
 const REGS=["Todas","Centro","Barra Funda","Bixiga / Paulista","Pinheiros / Vila Madalena","Jardins","Zona Sul","Zona Norte","Várias"];
 const TIPOS=["Todos","Samba","Bar","Restaurante","Alta gastronomia","Rápido / empório"];
-let st={r:"Todas",t:"Todos",q:""};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
-function chips(el,list,key){list.forEach(v=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=v;b.setAttribute("aria-pressed",st[key]===v);b.onclick=()=>{st[key]=v;el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.textContent===v));render()};el.appendChild(b)})}
-chips($("#regs"),REGS,"r");chips($("#tipos"),TIPOS,"t");
+
+/* Filtros começam pelo que vier no link (?regiao=Centro&tipo=Samba&q=...),
+   para dar para mandar uma seleção pronta no WhatsApp. */
+const P=new URLSearchParams(location.search);
+let st={r:REGS.includes(P.get("regiao"))?P.get("regiao"):"Todas",t:TIPOS.includes(P.get("tipo"))?P.get("tipo"):"Todos",q:P.get("q")||""};
+$("#q").value=st.q;
+function chips(el,list,key,count){list.forEach(v=>{const b=document.createElement("button");b.className="chip";b.type="button";b.dataset.v=v;
+  b.innerHTML=esc(v)+(count?`<small>${v===list[0]?D.length:D.filter(x=>x[key]===v).length}</small>`:"");
+  b.setAttribute("aria-pressed",st[key]===v);
+  b.onclick=()=>{st[key]=v;el.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.v===v));
+    if(key==="r"&&v!=="Todas")openMap(true);render();if(key==="r")$("#achar").scrollIntoView({block:"start"})};
+  el.appendChild(b)})}
+chips($("#regs"),REGS,"r",true);chips($("#tipos"),TIPOS,"t");
+
 function card(x){
  const maps="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(x.q+" São Paulo");
  const h=(x.ig||"").replace("?",""),unc=(x.ig||"").endsWith("?");
@@ -171,14 +275,15 @@ function card(x){
  const site=x.site?`<a href="${x.site}" target="_blank" rel="noopener">Site</a>`:"";
  const open=x.post&&opened.has(x.n);
  const foto=x.post?`<button class="see" type="button" data-foto="${x.n}" aria-expanded="${open}">${open?"Esconder foto":"Ver foto"}</button>`:"";
- return `<article class="card"><div class="top"><h2>${esc(x.name)}</h2><span class="num">#${x.n}</span></div>
+ const pin=GEO[x.n]?`<button class="see" type="button" data-n="${x.n}">Ver no mapa</button>`:"";
+ return `<article class="card" id="l${x.n}"><div class="top"><h2>${esc(x.name)}</h2><span class="num">#${x.n}</span></div>
  <div class="pills"><span class="pill">${esc(x.t)}</span><span class="pill reg">${esc(x.b)}</span></div>
  <p class="desc">${esc(x.d)}</p><p class="loc"><b>Onde:</b> ${esc(x.ref)}</p>
  ${x.hr?`<p class="loc"><b>Quando:</b> ${esc(x.hr)}</p>`:""}
  ${x.info?`<p class="loc">${esc(x.info)}</p>`:""}
  ${x.note?`<p class="note">${esc(x.note)}</p>`:""}
  ${open?embed(x):""}
- <div class="links"><button class="see" type="button" data-n="${x.n}">Ver no mapa</button>${foto}<a href="${maps}" target="_blank" rel="noopener">Google Maps</a>${ig}${site}</div></article>`}
+ <div class="links">${pin}${foto}<a href="${maps}" target="_blank" rel="noopener">Google Maps</a>${ig}${site}</div></article>`}
 
 /* ===== FOTOS =====
    Embed oficial do Instagram, só quando a pessoa pede ("Ver foto").
@@ -196,28 +301,72 @@ function processEmbeds(){
 }
 
 /* ===== MAPA =====
-   Cole aqui o link de embed do seu Google My Maps (o src do iframe que o My Maps gera).
-   Ex.: "https://www.google.com/maps/d/embed?mid=XXXXXXXX"
-   Enquanto estiver vazio, o mapa mostra um lugar por vez. */
-const MYMAPS_EMBED="";
+   Leaflet com o mapa do OpenStreetMap (no tema escuro, as cores dos tiles são invertidas por CSS). Mostra só os lugares filtrados.
+   Coordenadas por número da lista (n), geocodificadas pelo endereço do card.
+   Redes (Ráscal, La Guapa) aparecem por uma unidade; Wrappd e WeProtein não têm endereço fixo.
+   O Bar do Chagas é aproximado: a Rua João de Barros não está no OpenStreetMap. */
+const GEO={1:[-23.53925,-46.64973],2:[-23.53151,-46.65649],3:[-23.52665,-46.65930],4:[-23.53018,-46.66119],5:[-23.54022,-46.65185],
+6:[-23.55747,-46.64521],7:[-23.55822,-46.64663],8:[-23.54288,-46.64696],9:[-23.53389,-46.64865],10:[-23.5602,-46.68622],
+11:[-23.54103,-46.64965],12:[-23.55126,-46.63971],13:[-23.59481,-46.61972],14:[-23.58089,-46.68533],15:[-23.5772,-46.68805],
+16:[-23.48672,-46.58157],17:[-23.56158,-46.67238],18:[-23.56461,-46.68064],19:[-23.56638,-46.67973],20:[-23.57735,-46.68785],
+21:[-23.54486,-46.64477],22:[-23.54651,-46.64413],23:[-23.55933,-46.66486],24:[-23.55954,-46.66507],25:[-23.5763,-46.64564],
+26:[-23.55918,-46.66468],27:[-23.56665,-46.67771],28:[-23.5713,-46.68097],29:[-23.57118,-46.68902],30:[-23.57043,-46.68768],
+31:[-23.56056,-46.69804],32:[-23.56646,-46.68907],33:[-23.54752,-46.64295],36:[-23.55607,-46.66193],37:[-23.55207,-46.69169],
+38:[-23.54668,-46.64395]};
+const wide=matchMedia("(min-width:960px)");
+let map,layer,tiles,markers={},sel=0,shown=[];
+const mapOn=()=>wide.matches||!$("#mapcol").classList.contains("closed");
+function initMap(){
+  if(map||!window.L)return;
+  map=L.map("map",{scrollWheelZoom:false,zoomSnap:.5});
+  layer=L.featureGroup().addTo(map);
+  setTiles();
+  map.on("popupopen",e=>{sel=e.popup._source.n;paintPins()});
+  map.on("popupclose",()=>{sel=0;paintPins()});
+}
+function setTiles(){
+  if(tiles)return;
+  tiles=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+}
+const icon=on=>L.divIcon({className:"",html:`<div class="pin${on?" on":""}"></div>`,iconSize:[20,20],iconAnchor:[10,10],popupAnchor:[0,-8]});
+function paintPins(){for(const n in markers)markers[n].setIcon(icon(+n===sel))}
+const popup=x=>`<b>${esc(x.name)}</b><p>${esc(x.t)} · ${esc(x.b)}</p><p>${esc(x.ref)}</p>${x.hr?`<p>${esc(x.hr)}</p>`:""}
+  <div class="pl"><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(x.q+" São Paulo")}" target="_blank" rel="noopener">Como chegar</a><button type="button" data-card="${x.n}">Ver detalhes</button></div>`;
+function drawMap(fit=true){
+  if(!mapOn())return;
+  initMap();if(!map)return;
+  map.invalidateSize();
+  layer.clearLayers();markers={};
+  const pts=shown.filter(x=>GEO[x.n]);
+  pts.forEach(x=>{const m=L.marker(GEO[x.n],{icon:icon(x.n===sel),title:x.name,riseOnHover:true}).bindPopup(popup(x),{maxWidth:260});m.n=x.n;m.addTo(layer);markers[x.n]=m});
+  if(fit){if(pts.length)map.fitBounds(layer.getBounds(),{padding:[28,28],maxZoom:16});else map.setView([-23.555,-46.655],12)}
+  const off=shown.length-pts.length;
+  $("#maplabel").innerHTML=`<b>${pts.length} no mapa</b> · ${st.r==="Todas"?"todas as regiões":esc(st.r)}`+(off?` · ${off} sem endereço fixo (delivery ou várias unidades)`:"");
+}
+function openMap(on){
+  const c=$("#mapcol");c.classList.toggle("closed",!on);
+  $("#maptoggle").setAttribute("aria-expanded",on);
+  $("#maptoggle span").textContent=on?"Esconder mapa":"Ver no mapa";
+  if(on)drawMap();
+}
+function focusPlace(n){
+  const x=D.find(y=>y.n===n);
+  if(!shown.includes(x)){st={r:"Todas",t:"Todos",q:""};$("#q").value="";
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.v==="Todas"||c.dataset.v==="Todos"));render()}
+  openMap(true);
+  if(!map)return;
+  map.setView(GEO[n],16);markers[n].openPopup();
+  if(!wide.matches)$("#mapcol").scrollIntoView({block:"center"});
+}
+function showCard(n){
+  const el=document.getElementById("l"+n);if(!el)return;
+  el.scrollIntoView({block:"start"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1600);
+}
+$("#map").addEventListener("click",e=>{const b=e.target.closest("[data-card]");if(b)showCard(+b.dataset.card)});
+$("#maptoggle").onclick=()=>openMap($("#mapcol").classList.contains("closed"));
+wide.addEventListener("change",()=>drawMap());
 
-const one=x=>"https://maps.google.com/maps?q="+encodeURIComponent(x.q.includes("São Paulo")?x.q:x.q+" São Paulo")+"&z=16&output=embed";
-function showMap(x){
-  const f=$("#mapframe");
-  if(!x&&MYMAPS_EMBED){f.src=MYMAPS_EMBED;$("#maplabel").innerHTML="<b>Todos os lugares</b>";$("#mapall").hidden=true;return}
-  x=x||D[0];
-  f.src=one(x);
-  $("#maplabel").innerHTML="Mostrando: <b>"+esc(x.name)+"</b>"+(MYMAPS_EMBED?"":" · toque num nome abaixo para trocar");
-  $("#mapall").hidden=!MYMAPS_EMBED;
-}
-function setView(v,x){
-  const m=v==="map";
-  $("#mapview").hidden=!m;$("#listview").hidden=m;
-  $("#tab-map").setAttribute("aria-selected",m);$("#tab-list").setAttribute("aria-selected",!m);
-  if(m){showMap(x);window.scrollTo({top:0})}
-}
-$("#places").innerHTML=D.filter(x=>x.r!=="Várias"||x.n===15||x.n===18).map(x=>`<button class="chip" type="button" data-n="${x.n}">${esc(x.name)}</button>`).join("");
-$("#places").addEventListener("click",e=>{const b=e.target.closest("[data-n]");if(b)showMap(D.find(x=>x.n==b.dataset.n))});
 $("#grid").addEventListener("click",e=>{
   const f=e.target.closest("button[data-foto]");
   if(f){
@@ -227,19 +376,43 @@ $("#grid").addEventListener("click",e=>{
     if(on){art.querySelector(".links").insertAdjacentHTML("beforebegin",embed(D.find(x=>x.n===n)));processEmbeds()}
     else art.querySelector(".ig")?.remove();
     return}
-  const b=e.target.closest("button[data-n]");if(b)setView("map",D.find(x=>x.n==b.dataset.n))});
-$("#tab-map").onclick=()=>setView("map");
-$("#tab-list").onclick=()=>setView("list");
-$("#mapall").onclick=()=>showMap();
+  const b=e.target.closest("button[data-n]");if(b)focusPlace(+b.dataset.n)});
+
+/* ===== COMPARTILHAR ===== */
+const BASE="https://estevaouyra.github.io/bora-frequentar/";
+const MSG="Pessoal, urgente! Esses bares e restaurantes de SP se posicionaram em defesa da democracia e estão sendo boicotados. Bora encher esses lugares:";
+const selUrl=()=>BASE+location.search;
+const wa=(txt,url)=>"https://wa.me/?text="+encodeURIComponent(txt+" "+url);
+$("#wa-top").href=$("#wa-bottom").href=wa(MSG,BASE);
+async function share(url,txt,btn){
+  if(navigator.share){try{await navigator.share({title:"Pessoal, urgente! Bora frequentar SP",text:txt,url});return}catch(e){if(e.name==="AbortError")return}}
+  try{await navigator.clipboard.writeText(txt+" "+url)}catch(e){prompt("Copie o link:",url);return}
+  const old=btn.textContent;btn.textContent="Link copiado!";setTimeout(()=>btn.textContent=old,1800);
+}
+document.querySelectorAll(".share").forEach(b=>b.onclick=()=>share(BASE,MSG,b));
+$(".share-sel").onclick=e=>{
+  const what=[st.t!=="Todos"?st.t.toLowerCase():"",st.r!=="Todas"?"em "+st.r:"",st.q?`(“${st.q}”)`:""].filter(Boolean).join(" ");
+  share(selUrl(),`Pessoal, urgente! Lugares ${what} que defenderam a democracia e estão sendo boicotados. Bora frequentar:`,e.currentTarget)};
+
+function syncURL(){
+  const p=new URLSearchParams();
+  if(st.r!=="Todas")p.set("regiao",st.r);if(st.t!=="Todos")p.set("tipo",st.t);if(st.q.trim())p.set("q",st.q.trim());
+  history.replaceState(null,"",location.pathname+(p.size?"?"+p:"")+location.hash);
+  $(".share-sel").hidden=!p.size;
+}
 function render(){
  const q=norm(st.q.trim());
- const out=D.filter(x=>(st.r==="Todas"||x.r===st.r)&&(st.t==="Todos"||x.t===st.t)&&(!q||norm([x.name,x.d,x.b,x.ref,x.t,x.hr||"",x.info||""].join(" ")).includes(q)));
- $("#grid").innerHTML=out.map(card).join("");
- if(out.some(x=>opened.has(x.n)))processEmbeds();
- $("#count").textContent=out.length+(out.length===1?" lugar":" lugares");
- $("#empty").hidden=out.length>0;
+ shown=D.filter(x=>(st.r==="Todas"||x.r===st.r)&&(st.t==="Todos"||x.t===st.t)&&(!q||norm([x.name,x.d,x.b,x.ref,x.t,x.hr||"",x.info||""].join(" ")).includes(q)));
+ $("#grid").innerHTML=shown.map(card).join("");
+ if(shown.some(x=>opened.has(x.n)))processEmbeds();
+ $("#count").innerHTML=`<b>${shown.length}</b> `+(shown.length===1?"lugar":"lugares")+(st.r!=="Todas"?" em "+esc(st.r):"");
+ $("#empty").hidden=shown.length>0;
+ syncURL();drawMap();
+ document.querySelectorAll(".row").forEach(r=>{const c=r.querySelector('[aria-pressed="true"]');if(c)r.scrollLeft=c.offsetLeft-r.offsetLeft-(r.clientWidth-c.offsetWidth)/2});
 }
 $("#q").addEventListener("input",e=>{st.q=e.target.value;render()});
+new ResizeObserver(()=>document.documentElement.style.setProperty("--barh",$("#bar").offsetHeight+"px")).observe($("#bar"));
+if(st.r!=="Todas")openMap(true);
 render();
 </script>
 </body>
